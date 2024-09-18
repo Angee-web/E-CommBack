@@ -11,7 +11,9 @@ app.use(bodyParser.json());
 app.use(cors({ origin: 'http://localhost:5173' })) //the host that the react app is running on
 
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/E-Commerce");
+mongoose.connect(
+  "mongodb+srv://adaezeugwumba460:Dabu6039@cluster0.bqjorqm.mongodb.net/E-Commerce?retryWrites=true&w=majority&appName=E-Commerce"
+);
 const db = mongoose.connection;
 
 // Check if the database connection is successful
@@ -21,10 +23,6 @@ db.once("open", () => {
 
 // Define the product schema
 const productSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true,
-    },
     imageUrl: {
         type: String,
         required: true,
@@ -96,6 +94,27 @@ app.patch("/api/v1/updateProduct/:productId", async (req, res) => {
             status: "success",
             message: "Product Updated Successfully",
             data: updatedProduct
+        });
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+});
+
+app.delete("/api/v1/deleteProduct/:productId", async (req, res) => {
+    const id = req.params.productId;
+    try {
+        const deletedProduct = await Products.findByIdAndDelete(id);
+
+        if(!deletedProduct){
+            return res.status(404).json({
+                status: "error",
+                message: "Product not found",
+            });
+        }
+        res.status(200).send({
+            status: "success",
+            message: "Product Deleted Successfully",
+            data: deletedProduct
         });
     } catch (err) {
         res.status(500).json({ msg: err.message });
