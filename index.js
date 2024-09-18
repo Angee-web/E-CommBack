@@ -8,7 +8,7 @@ const app = express();
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
-app.use(cors({ origin: 'http://localhost:5173' })) //the host that the react app is running on
+app.use(cors({ origin: '*' })) //the host that the react app is running on
 
 // Connect to MongoDB
 mongoose.connect(
